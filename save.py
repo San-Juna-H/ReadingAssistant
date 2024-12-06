@@ -4,18 +4,18 @@ import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 def authenticate_google_sheets():
-
+    # 비밀 정보 딕셔너리 설정
     credentials_dict = {
-        "type": f"{st.secrets["type"]}",
-        "project_id": f"{st.secrets["project_id"]}",
-        "private_key_id": f"{st.secrets["private_key_id"]}",
-        "private_key": f"{st.secrets["private_key"]}",
-        "client_email": f"{st.secrets["client_email"]}",
-        "client_id": f"{st.secrets["client_id"]}",
+        "type": st.secrets["type"],
+        "project_id": st.secrets["project_id"],
+        "private_key_id": st.secrets["private_key_id"],
+        "private_key": st.secrets["private_key"],
+        "client_email": st.secrets["client_email"],
+        "client_id": st.secrets["client_id"],
         "auth_uri": "https://accounts.google.com/o/oauth2/auth",
         "token_uri": "https://oauth2.googleapis.com/token",
         "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": f"{st.secrets["client_x509_cert_url"]}",
+        "client_x509_cert_url": st.secrets["client_x509_cert_url"],
         "universe_domain": "googleapis.com"
     }
     
