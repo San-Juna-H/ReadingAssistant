@@ -3,22 +3,11 @@ import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
-import streamlit as st
-import json
-from oauth2client.service_account import ServiceAccountCredentials
-import gspread
-
 def authenticate_google_sheets():
+
     # Streamlit Secrets에서 JSON 인증 정보 가져오기
-    api_key = st.secrets["google_cloud"]["api_key"]
-    
-    # api_key가 멀티라인 문자열로 되어 있을 수 있기 때문에 처리
-    try:
-        # JSON 문자열로 변환
-        credentials_dict = json.loads(api_key)
-    except json.decoder.JSONDecodeError as e:
-        st.error(f"JSON Decode Error: {e}")
-        return None
+    api_key = st.secrets["api_key"]
+    credentials_dict = json.loads(api_key)
     
     # 인증 정보 설정
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
