@@ -11,9 +11,6 @@ def authenticate_google_sheets():
     # 줄바꿈 문자를 실제 줄바꿈으로 변환
     api_key = api_key.replace("\\n", "\n")
     
-    # 공백 제거 (중요한 공백이 아니라면 제거할 수 있습니다)
-    api_key = api_key.replace('\n', '').replace(' ', '')
-    
     credentials_dict = json.loads(api_key)
     st.write(credentials_dict)
     
