@@ -8,6 +8,10 @@ def authenticate_google_sheets():
     # Streamlit Secrets에서 JSON 인증 정보 가져오기
     api_key = st.secrets["api_key"]
     st.write(api_key)
+
+    # 공백 제거 (중요한 공백이 아니라면 제거할 수 있습니다)
+    api_key = api_key.replace('\n', '').replace(' ', '')
+    
     credentials_dict = json.loads(api_key)
     st.write(credentials_dict)
     
