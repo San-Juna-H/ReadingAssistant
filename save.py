@@ -7,7 +7,7 @@ def authenticate_google_sheets():
 
     # Streamlit Secrets에서 JSON 인증 정보 가져오기
     api_key = st.secrets["api_key"]
-    credentials_dict = api_key
+    credentials_dict = json.loads(api_key)
     st.write(credentials_dict)
     
     # 인증 정보 설정
