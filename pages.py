@@ -92,14 +92,19 @@ def experiment_page():
     experiment_explanation_block()
 
     if "random_state" not in st.session_state:
-        st.session_state["random_state"] = True
+        st.session_state["random_state"] = random.randint(1, 100)
+
         # 데이터 불러오기
         file_path = "dataset.csv"  # 파일 경로
         df = pd.read_csv(file_path)
-        # 랜덤하게 20개 행 선택
-        st.session_state["experiment_data"] = df.sample(n=20)
 
-    examples = process_example(st.session_state["experiment_data"])
+    # 랜덤하게 20개 행 선택
+    experiment_data = df.sample(n=20, random_state=st.session_state["random_state"])
+
+    unshuffled_examples = process_example(experiment_data)
+
+    # 데이터프레임 행 셔플
+    examples = unshuffled_examples.sample(frac=1, random_state=st.session_state["random_state"]).reset_index(drop=True)
 
     # 세션 상태 초기화
     if "experiment_num" not in st.session_state:
@@ -200,7 +205,7 @@ def question_block(experiment_num):
     return Hmp, Hru, Hre
 
 
-def process_example(experiment_data):
+def process_example(experiment_data, random_state):
     df = experiment_data
     rewrite_options = ['simplify', 'explain', 'define', 'personalize']
     rows = []
@@ -222,10 +227,7 @@ def process_example(experiment_data):
 
     df = pd.DataFrame(rows)
 
-    # 데이터프레임 행 셔플
-    df_shuffled = df.sample(frac=1, random_state=42).reset_index(drop=True)
-
-    return df_shuffled
+    return df
 
 def completion_page():
     st.title("🎉 실험 완료 🎉")  # 제목을 표시
