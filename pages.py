@@ -97,9 +97,10 @@ def experiment_page():
         # 데이터 불러오기
         file_path = "dataset.csv"  # 파일 경로
         df = pd.read_csv(file_path)
+        st.session_state["experiment_data"] = df
 
     # 랜덤하게 20개 행 선택
-    experiment_data = df.sample(n=20, random_state=st.session_state["random_state"])
+    experiment_data = st.session_state["experiment_data"].sample(n=20, random_state=st.session_state["random_state"])
 
     unshuffled_examples = process_example(experiment_data)
 
