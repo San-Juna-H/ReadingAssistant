@@ -223,7 +223,7 @@ def process_example(experiment_data):
     df = pd.DataFrame(rows)
 
     # 데이터프레임 행 셔플
-    df_shuffled = df.sample(frac=1).reset_index(drop=True)
+    df_shuffled = df.sample(frac=1, random_state=42).reset_index(drop=True)
 
     return df_shuffled
 
