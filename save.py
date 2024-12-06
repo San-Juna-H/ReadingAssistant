@@ -1,10 +1,16 @@
+import json
+import streamlit as st
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 
 def authenticate_google_sheets():
+    # Streamlit Secrets에서 JSON 인증 정보 가져오기
+    api_key = st.secrets["google_cloud"]["api_key"]
+    credentials_dict = json.loads(api_key)
+    
     # 인증 정보 설정
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    credentials = ServiceAccountCredentials.from_json_keyfile_name('googleapikey.json', scope)
+    credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_dict, scope)
     client = gspread.authorize(credentials)
     
     # 구글 스프레드시트 열기 (스프레드시트 이름 변경 필요)
