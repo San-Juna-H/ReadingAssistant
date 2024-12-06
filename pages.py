@@ -205,7 +205,7 @@ def question_block(experiment_num):
     return Hmp, Hru, Hre
 
 
-def process_example(experiment_data, random_state):
+def process_example(experiment_data):
     df = experiment_data
     rewrite_options = ['simplify', 'explain', 'define', 'personalize']
     rows = []
