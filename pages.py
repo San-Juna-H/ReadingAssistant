@@ -1,12 +1,14 @@
 import streamlit as st
 import save
 import data
+import pandas as pd
+import random
 
 # 실험 설명 페이지 함수
 def intro_page():
     st.title("🌟 실험 참여 안내 🌟")
     st.divider()  # 구분선
-    
+
     # 실험 설명 블록
     intro_explanation_block()
     
@@ -82,15 +84,6 @@ def personal_information_block():
 
     return user_name, user_age, user_gender, education_level, familiar_fields, additional_info
 
-hyperaemia = {
-    "concept": "Hyperaemia",
-    "difficult_term": "blood",
-    "definition": "Hyperaemia is the increase of blood flow to different tissues in the body.",
-    # "rewrite": "Blood flow increases to different parts of the body.",
-    "domain": "medicine",
-    # "rewrite_type": "simple"
-}
-
 def experiment_page():
     st.title("🧠 실험 진행 🧠")
     st.divider()  # 구분선
@@ -98,17 +91,27 @@ def experiment_page():
     # 실험 설명
     experiment_explanation_block()
 
+    if "random_state" not in st.session_state:
+        st.session_state["random_state"] = True
+        # 데이터 불러오기
+        file_path = "dataset.csv"  # 파일 경로
+        df = pd.read_csv(file_path)
+        # 랜덤하게 20개 행 선택
+        st.session_state["experiment_data"] = df.sample(n=20)
+
+    examples = process_example(st.session_state["experiment_data"])
+
     # 세션 상태 초기화
     if "experiment_num" not in st.session_state:
         st.session_state["experiment_num"] = 1
         st.session_state["experiment"] = {}
 
     experiment_num = st.session_state["experiment_num"]
-
+        
     if experiment_num <= 20:
-
+        example = examples.iloc[experiment_num-1]
         # 실험 블록
-        experiment_content_block(data.rewrite(hyperaemia, st.session_state["personal_info"]), experiment_num)
+        experiment_content_block(example, experiment_num)
         Hmp, Hru, Hre = question_block(experiment_num)
 
         # 버튼 표시: 다음 또는 완료
@@ -122,12 +125,12 @@ def experiment_page():
 
             # 실험 결과 저장
             st.session_state["experiment"][f"experiment_{experiment_num}"] = {
-                "concept": example['concept'],
-                "difficult_term": example['difficult_term'],
-                "original_definition": example['definition'],
-                "rewrite_definition": example['rewrite'],
+                "term": example['term'],
+                "difficult_concept": example['difficult_concept'],
+                "original": example['original'],
+                "rewrite": example['rewrite'],
                 "rewrite_type": example['rewrite_type'],
-                "domain": example['domain'],
+                "term_domain": example['term_domain'],
                 "Hmp": Hmp,
                 "Hru": Hru,
                 "Hre": Hre
@@ -138,8 +141,6 @@ def experiment_page():
                 st.session_state["experiment_num"] += 1
             else:
                 st.session_state["page"] = "completion"
-
-            # 상태 변경 후 즉시 새로고침
             st.rerun()
 
     else:
@@ -161,11 +162,13 @@ def experiment_content_block(example, experiment_num):
     st.subheader(f"실험 {experiment_num} / 20")
 
     # 현재 실험 내용 표시
-    st.markdown(f"**Concept**: {example['concept']}")
-    st.markdown(f"**ORIGINAL**: {example['definition']}")
+    st.markdown(f"**Term**: {example['term']}")
+    st.markdown(f"**Difficult Concept**: {example['difficult_concept']}")
+    st.markdown(f"**ORIGINAL**: {example['original']}")
     st.markdown(f"**REWRITE**: {example['rewrite']}")
 
 def question_block(experiment_num):
+
     # 질문 1. Hmp (Meaning Preservation)
     Hmp = st.radio(
         "1. 수정된 정의가 원본 정의의 의미를 얼마나 보존하고 있습니까?",
@@ -195,6 +198,34 @@ def question_block(experiment_num):
 
     # 값들을 리턴
     return Hmp, Hru, Hre
+
+
+def process_example(experiment_data):
+    df = experiment_data
+    rewrite_options = ['simplify', 'explain', 'define', 'personalize']
+    rows = []
+
+    # 5개씩 데이터를 묶어 처리
+    for i in range(0, len(df), 5):
+        batch = df.iloc[i:i+5].copy()  # 5개씩 묶어서 처리
+        for index, row in batch.iterrows():
+            rewrite_type = rewrite_options[i//4]  # rewrite_type 선택
+            rewrite_value = row[rewrite_type]  # 해당 열의 값 가져오기
+            rows.append({
+                'term': row['term'],
+                'difficult_concept': row['difficult_concept'],
+                'term_domain': row['term_domain'],
+                'original': row['original'],
+                'rewrite': rewrite_value,
+                'rewrite_type': rewrite_type
+            })
+
+    df = pd.DataFrame(rows)
+
+    # 데이터프레임 행 셔플
+    df_shuffled = df.sample(frac=1, random_state=42).reset_index(drop=True)
+
+    return df_shuffled
 
 def completion_page():
     st.title("🎉 실험 완료 🎉")  # 제목을 표시
@@ -239,12 +270,12 @@ def process_response():
     for experiment_num in range(1, 21):
         if f"experiment_{experiment_num}" in st.session_state["experiment"]:
             experiment_data = st.session_state["experiment"][f"experiment_{experiment_num}"]
-            responses.append(experiment_data['concept'])
-            responses.append(experiment_data['difficult_term'])
-            responses.append(experiment_data['original_definition'])
-            responses.append(experiment_data['rewrite_definition'])
+            responses.append(experiment_data['term'])
+            responses.append(experiment_data['difficult_concept'])
+            responses.append(experiment_data['original'])
+            responses.append(experiment_data['rewrite'])
             responses.append(experiment_data['rewrite_type'])
-            responses.append(experiment_data['domain'])
+            responses.append(experiment_data['term_domain'])
             responses.append(experiment_data['Hmp'])
             responses.append(experiment_data['Hru'])
             responses.append(experiment_data['Hre'])
