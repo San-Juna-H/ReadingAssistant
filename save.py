@@ -32,5 +32,14 @@ def authenticate_google_sheets():
 
 def record_to_sheets(response_data):
     spreadsheet = authenticate_google_sheets()
-    # 첫 번째 행에 데이터를 삽입
-    spreadsheet.insert_row(response_data, 3)
+
+    # response_data가 리스트 형태인지 확인
+    if not isinstance(response_data, list):
+        raise ValueError("response_data should be a list")
+
+    # 첫 번째 행에 데이터를 삽입 (3번째 행으로 설정)
+    try:
+        spreadsheet.insert_row(response_data, 3)
+        st.success("Data inserted successfully.")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
