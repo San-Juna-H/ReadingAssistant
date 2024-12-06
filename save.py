@@ -5,11 +5,20 @@ from oauth2client.service_account import ServiceAccountCredentials
 
 def authenticate_google_sheets():
 
-    # Streamlit Secrets에서 JSON 인증 정보 가져오기
-    api_key = st.secrets["api_key"]
-    st.write(api_key)
+    credentials_dict = {
+        "type": f"{st.secrets["type"]}",
+        "project_id": f"{st.secrets["project_id"]}",
+        "private_key_id": f"{st.secrets["private_key_id"]}",
+        "private_key": f"{st.secrets["private_key"]}",
+        "client_email": f"{st.secrets["client_email"]}",
+        "client_id": f"{st.secrets["client_id"]}",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "client_x509_cert_url": f"{st.secrets["client_x509_cert_url"]}",
+        "universe_domain": "googleapis.com"
+    }
     
-    credentials_dict = json.loads(api_key)
     st.write(credentials_dict)
     
     # 인증 정보 설정
