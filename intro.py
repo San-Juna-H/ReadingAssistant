@@ -31,11 +31,9 @@ def intro_page():
             # 성공 및 페이지 이동
             st.success("정보가 성공적으로 제출되었습니다. 다음 세션으로 이동합니다.")
             st.session_state["page"] = "experiment"
-            st.rerun()
         else:
             # 오류 메시지 출력
             st.error("모든 필수 항목을 입력해주세요.")
-
         st.rerun()
 
 def intro_explanation_block():
