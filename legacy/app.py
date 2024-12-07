@@ -1,9 +1,8 @@
 import streamlit as st
 import pages
-import data
+import legacy.data as data
 import save
 import pandas as pd
-
 # Streamlit 페이지 구성
 st.set_page_config(page_title="전문 용어 이해 실험", layout="wide")
 
