@@ -4,7 +4,7 @@ import experiment
 import complete
 
 # Streamlit 페이지 구성
-st.set_page_config(layout="wide", page_title="ReadingAssistantExperiment", page_icon="🌟")
+st.set_page_config(page_title="ReadingAssistantExperiment", page_icon="🌟")
 
 # 페이지 전환
 if "page" not in st.session_state:
