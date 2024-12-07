@@ -36,6 +36,8 @@ def intro_page():
             # 오류 메시지 출력
             st.error("모든 필수 항목을 입력해주세요.")
 
+        st.rerun()
+
 def intro_explanation_block():
     '''
     개요 설명 블록
