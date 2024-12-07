@@ -16,9 +16,6 @@ def completion_page():
     )
     # "응답 제출 및 인트로 페이지로 돌아가기" 버튼
     if st.button("🏠 응답 제출 및 인트로 페이지로 돌아가기"):
-
-        st.write(st.session_state)
-
         # 응답을 저장
         responses = process_response()
         save.record_to_sheets(responses)
